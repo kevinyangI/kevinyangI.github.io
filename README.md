@@ -1,5 +1,5 @@
-# hexo-theme-hiero Sample
+# kevinyangI
 
-Hi, this is hexo-theme-hiero sample website.
+Hi, this is my technology blog.
 
-You can click here(https://itimetraveler.github.io/hexo-theme-hiero) to visit.
+You can click here(https://kevinyangi.github.io) to visit.
