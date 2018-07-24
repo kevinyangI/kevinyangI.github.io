@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>two sum | kevinyangI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+    <meta name="keywords" content="leetcode" />
+  
+  
+  
+  
+  <meta name="description" content="Problem link： https://leetcode.com/problems/3sum-closest/#/description
+
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+
+You may assume that">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Two Sum">
+<meta property="og:url" content="https://kevinyangI.github.io/2017/08/20/leetcode-1/index.html">
+<meta property="og:site_name" content="kevinyangI">
+<meta property="og:description" content="Problem link： https://leetcode.com/problems/3sum-closest/#/description
+
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+
+You may assume that">
+<meta property="og:updated_time" content="2018-07-24T07:11:29.731Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Two Sum">
+<meta name="twitter:description" content="Problem link： https://leetcode.com/problems/3sum-closest/#/description
+
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+
+You may assume that">
+  
+    <link rel="alternate" href="/atom.xml" title="kevinyangI" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/kevinyangI.github.io/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/kevinyangI.github.io/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="../../../../css/style.css">
+
+  <script src="../../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../../js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/kevinyangI.github.io/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="../../../../css/dialog.css">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/kevinyangI.github.io/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/kevinyangI.github.io/css/vdonate.css" >
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/kevinyangI.github.io/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">Home</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">Archives</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">Categories</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">Tags</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">About</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/kevinyangI.github.io/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="../../../../js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-leetcode-1" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Two Sum
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2017-08-20T02:50:55.000Z" itemprop="datePublished">2017-08-20</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/leetcode/">leetcode</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		PV:<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p><strong>Problem link</strong>： <a href="https://leetcode.com/problems/3sum-closest/#/description" target="_blank" rel="external">https://leetcode.com/problems/3sum-closest/#/description</a></p>
+</blockquote>
+<pre><code>Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+Example:
+
+Given numbers = [2, 7, 11, 15], target = 9,
+
+Because numbers[0] + numbers[1] = 2 + 7 = 9,
+
+return [0, 1].
+
+
+&lt;问题描述&gt;
+
+给定一个整形数组，需要从数组中找出两个整数，使得它们的和等于另外一个给定的整数
+
+你可以假定每一个输入有且仅有一个答案，并且不能使用同一个元素两次
+
+给出的twoSum函数应该返回找到的这两个整数的索引值，而且index1必须小于index2
+
+输入：numbers = {2, 7, 11, 15}, target = 9 (注意：输入的数组不一定有序)
+
+输出：index1 ＝ 0， index2 ＝ 1
+</code></pre><h2 id="Approach-1-Brute-Force"><a href="#Approach-1-Brute-Force" class="headerlink" title="Approach #1 (Brute Force)"></a><strong>Approach #1 (Brute Force)</strong></h2><h3 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a><strong>Analysis</strong></h3><p>首先看到题目之后，很容易就能想到O(n^2)的方法，就是通过双重循环遍历数组中所有元素的两两结合，当出现符合的target时返回两个元素的索引。注意内存循环应该从外层循环索引的下一个开始搜索，避免查找到两个相同的元素。</p>
+<h3 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.util.*;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TwoSum</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> target) &#123;</div><div class="line">        <span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;numbers.length; i++) &#123;</div><div class="line">        	<span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>; j&lt;numbers.length; j++) &#123;</div><div class="line">        		<span class="keyword">if</span> (numbers[j] == target - numbers[i]) &#123;</div><div class="line">        			result[<span class="number">0</span>] = i;</div><div class="line">        			result[<span class="number">1</span>] = j;</div><div class="line">        		&#125;</div><div class="line">        	&#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// leetcode很好的一点就是不用考虑输入输出，只需要提交你的解决方案</span></div><div class="line"><span class="comment">// 这是我自己写的一个输入输出测试，Java语言处理输入有点烦。。</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution001</span></span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		<span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">		<span class="keyword">int</span> target;</div><div class="line">		<span class="keyword">int</span>[] numbers = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</div><div class="line">		<span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</div><div class="line">		<span class="keyword">int</span>[] results = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line"></div><div class="line">		Scanner in = <span class="keyword">new</span> Scanner(System.in);</div><div class="line">		System.out.println(<span class="string">"please give an array of intergers and a target:"</span>);</div><div class="line"></div><div class="line">		<span class="keyword">while</span>(in.hasNextInt())</div><div class="line">			temp[count++] = in.nextInt();</div><div class="line"></div><div class="line">		target = temp[count-<span class="number">1</span>];</div><div class="line"></div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;count-<span class="number">1</span>; i++)</div><div class="line">			numbers[i] = temp[i];</div><div class="line"></div><div class="line">		TwoSum ts = <span class="keyword">new</span> TwoSum();</div><div class="line">		results = ts.twoSum(numbers, target);</div><div class="line">		System.out.print(results[<span class="number">0</span>] + <span class="string">" "</span> + results[<span class="number">1</span>]);</div><div class="line">		System.out.println();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Complexity"><a href="#Complexity" class="headerlink" title="Complexity"></a><strong>Complexity</strong></h3><p>时间复杂度：O(n^2)</p>
+<p>空间复杂度：O(1)O(1)</p>
+<h2 id="Approach-2-Two-pass-Hash-Table"><a href="#Approach-2-Two-pass-Hash-Table" class="headerlink" title="Approach #2 (Two-pass Hash Table)"></a><strong>Approach #2 (Two-pass Hash Table)</strong></h2><h3 id="Analysis-1"><a href="#Analysis-1" class="headerlink" title="Analysis"></a><strong>Analysis</strong></h3><p>为了改善运行时的复杂度，我们需要一种更有效的方法来检查数组中是否存在互补。如果存在互补，我们需要查找它的索引。将数组中每个元素映射到其索引的最好方法是什么？很容易就联想到了哈希表。</p>
+<p>我们减少了查找时间从O(n)到O(1)的交易空间的速度。哈希表是为这个目的而建立的，它支持在近恒定时间内快速查找。所谓“近”，是因为如果发生碰撞，查找可能退化为O(n)的时间。但哈希表查找应摊销O(1)的时间，只要散列函数仔细选择。</p>
+<p>一个简单的实现使用两个迭代。第一次遍历数组先将所有元素和它的下标作为key-value对存入Hashmap中，第二次遍历数组时根据目标和与当前元素之差，在Hashmap中找相应的差值。如果存在该差值，说明存在两个数之和是目标和。此时记录下当前数组元素下标并从Hashmap中取出数组元素下标即可。Hashmap获取元素的时间复杂度是O(1)，所以总的时间复杂度仍不超过O(n)。</p>
+<p>注意：判定是否存在该差值时，要同时判断该差值的下标是不是当前遍历的元素下标，以避免重复。</p>
+<h3 id="Code-1"><a href="#Code-1" class="headerlink" title="Code"></a><strong>Code</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> target) &#123;</div><div class="line">	<span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">    Map&lt;integer integer=<span class="string">""</span>&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numbers.length; i++) &#123;</div><div class="line">        map.put(numbers[i], i);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numbers.length; i++) &#123;</div><div class="line">        <span class="keyword">int</span> complement = target - numbers[i];</div><div class="line">        <span class="keyword">if</span> (map.containsKey(complement) &amp;&amp; map.get(complement) != i) &#123;</div><div class="line">			result[<span class="number">0</span>] = i;</div><div class="line">			result[<span class="number">1</span>] = map.get(complement);</div><div class="line">            <span class="keyword">return</span> result;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"No two sum solution"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Complexity-1"><a href="#Complexity-1" class="headerlink" title="Complexity"></a><strong>Complexity</strong></h3><p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(1)O(n)</p>
+<h2 id="Approach-3-One-pass-Hash-Table"><a href="#Approach-3-One-pass-Hash-Table" class="headerlink" title="Approach #3 (One-pass Hash Table)"></a><strong>Approach #3 (One-pass Hash Table)</strong></h2><h3 id="Analysis-2"><a href="#Analysis-2" class="headerlink" title="Analysis"></a><strong>Analysis</strong></h3><p>可以对Two-pass Hash Table进行优化，通过一次遍历即可。当我们在表中进行迭代和插入元素时，我们也回头检查表中是否存在当前元素的互补。如果它存在，我们已经找到一个解决方案，并立即返回。</p>
+<h3 id="Code-2"><a href="#Code-2" class="headerlink" title="Code"></a><strong>Code</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> target) &#123;</div><div class="line">    <span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">    Map&lt;integer integer=<span class="string">""</span>&gt; map = <span class="keyword">new</span> HashMap&lt;integer integer=<span class="string">""</span>&gt;();</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numbers.length; i++) &#123;</div><div class="line">    	<span class="keyword">if</span> (map.containsKey(target - numbers[i])) &#123;</div><div class="line">        	result[<span class="number">1</span>] = i;</div><div class="line">        	result[<span class="number">0</span>] = map.get(target - numbers[i]);</div><div class="line">            <span class="keyword">return</span> result;</div><div class="line">        &#125;</div><div class="line">        map.put(numbers[i], i);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Complexity-2"><a href="#Complexity-2" class="headerlink" title="Complexity"></a><strong>Complexity</strong></h3><p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(1)O(n)</p>
+<h2 id="Approach-4-Sorting-With-Two-Pointers"><a href="#Approach-4-Sorting-With-Two-Pointers" class="headerlink" title="Approach #4 (Sorting With Two Pointers)"></a><strong>Approach #4 (Sorting With Two Pointers)</strong></h2><h3 id="Analysis-3"><a href="#Analysis-3" class="headerlink" title="Analysis"></a><strong>Analysis</strong></h3><p>问题描述：在一个数组（无序）中快速找出两个数字，使得两个数字之和等于一个给定的值。假设数组中肯定存在至少一组满足要求。</p>
+<p><strong>《剑指Offer》P214（有序数组） 《编程之美》P176</strong></p>
+<p>容易想到在有序数组中进行查找。首先将原数组复制一遍，对新数组进行排序。排序后将双指针指向头部与尾部元素，进行迭代。如果双指针指向元素之和大于目标和，则将尾部指针向前移一位，反之则将头部指针向后移一位，直到双指针指向元素之和等于目标和，记录这两个元素的值，然后再遍历一遍旧数组，找出这两个元素的下标。</p>
+<h3 id="Code-3"><a href="#Code-3" class="headerlink" title="Code"></a><strong>Code</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> target) &#123;</div><div class="line">    <span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">	<span class="keyword">int</span>[] nums = <span class="keyword">new</span> <span class="keyword">int</span>[numbers.length];</div><div class="line"></div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numbers.length; i++) &#123; <span class="comment">// 复制数组</span></div><div class="line">		nums[i] = numbers[i];</div><div class="line">	&#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length &lt; <span class="number">2</span>)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    Arrays.sort(nums); <span class="comment">// 数组排序</span></div><div class="line">    <span class="keyword">int</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">int</span> right = nums.length - <span class="number">1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">while</span>(left &lt; right)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span>(nums[left] + nums[right] == target)</div><div class="line">        &#123;</div><div class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numbers.length; i++) &#123;</div><div class="line">				<span class="keyword">if</span>(numbers[i] == nums[left])</div><div class="line">					result[<span class="number">0</span>] = i;</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numbers.length; i++) &#123;</div><div class="line">				<span class="keyword">if</span>(numbers[i] == nums[right] &amp;&amp; i != result[<span class="number">0</span>]) <span class="comment">// 避免查找到两个相同元素</span></div><div class="line">					result[<span class="number">1</span>] = i;</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">if</span> (result[<span class="number">0</span>] &gt; result[<span class="number">1</span>]) &#123; <span class="comment">// 保证找到的第一个整数索引比第二个要小</span></div><div class="line">				<span class="keyword">int</span> temp = result[<span class="number">0</span>];</div><div class="line">				result[<span class="number">0</span>] = result[<span class="number">1</span>];</div><div class="line">				result[<span class="number">1</span>] = temp;</div><div class="line">			&#125;</div><div class="line">            <span class="keyword">return</span> result;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(nums[left] + nums[right] &gt; target)</div><div class="line">            right--;</div><div class="line">        <span class="keyword">else</span></div><div class="line">            left++;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Complexity-3"><a href="#Complexity-3" class="headerlink" title="Complexity"></a><strong>Complexity</strong></h3><p>时间复杂度：O(nlogn)</p>
+<p>空间复杂度：O(1)取决于排序算法</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+<script src="../../../../js/vdonate.js"></script>
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: 'Donate', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: '/gallery/WeChatQR.jpg',
+  alipayImage: '/gallery/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>Post author:  </strong>kevinyangI</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>Post link:  </strong>
+          <a href="/kevinyangI.github.io/2017/08/20/leetcode-1/" target="_blank" title="Two Sum">https://kevinyangI.github.io/2017/08/20/leetcode-1/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>Copyright Notice:   </strong>
+            All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            unless stating additionally.
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../../2018/07/10/bittorrent-magnet/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          BitTorrent协议与MagNet协议原理
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../../../2016/10/24/Hiker主题预览/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hiker主题预览</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Approach-1-Brute-Force"><span class="nav-number">1.</span> <span class="nav-text">Approach #1 (Brute Force)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Analysis"><span class="nav-number">1.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Code"><span class="nav-number">1.2.</span> <span class="nav-text">Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Complexity"><span class="nav-number">1.3.</span> <span class="nav-text">Complexity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Approach-2-Two-pass-Hash-Table"><span class="nav-number">2.</span> <span class="nav-text">Approach #2 (Two-pass Hash Table)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Analysis-1"><span class="nav-number">2.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Code-1"><span class="nav-number">2.2.</span> <span class="nav-text">Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Complexity-1"><span class="nav-number">2.3.</span> <span class="nav-text">Complexity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Approach-3-One-pass-Hash-Table"><span class="nav-number">3.</span> <span class="nav-text">Approach #3 (One-pass Hash Table)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Analysis-2"><span class="nav-number">3.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Code-2"><span class="nav-number">3.2.</span> <span class="nav-text">Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Complexity-2"><span class="nav-number">3.3.</span> <span class="nav-text">Complexity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Approach-4-Sorting-With-Two-Pointers"><span class="nav-number">4.</span> <span class="nav-text">Approach #4 (Sorting With Two Pointers)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Analysis-3"><span class="nav-number">4.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Code-3"><span class="nav-number">4.2.</span> <span class="nav-text">Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Complexity-3"><span class="nav-number">4.3.</span> <span class="nav-text">Complexity</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2018 kevinyangI All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				UV : <span id="busuanzi_value_site_uv"></span> |  
+				PV : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+  <script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+  <script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            kevinyangI
+          </div>
+          <div class="panel-body">
+            Copyright © 2018 kevinyangI All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
