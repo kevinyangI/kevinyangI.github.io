@@ -29,7 +29,7 @@
 
 
 基本原理：将构造函数私有化，并且通过静态方法或枚举获取一个唯一的实例对象，在这个获取的过程中必须保">
-<meta property="og:updated_time" content="2018-08-31T07:20:04.870Z">
+<meta property="og:updated_time" content="2018-08-31T14:24:26.652Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="单例模式">
 <meta name="twitter:description" content="在所有的设计模式中，单例模式是我们在项目开发中最为常见的设计模式之一，而单例模式有很多种实现方式，你是否都了解呢？高并发下如何保证单例模式的线程安全性呢？如何保证序列化后的单例对象在反序列化后仍然是单例的呢？
@@ -221,7 +221,13 @@
 </blockquote>
 <hr>
 <blockquote>
-<p><strong>适用场景</strong>：<br>（1）需要频繁地进行创建和销毁的对象；<br>（2）创建对象时耗时过多或耗费资源过多，但又经常用到的对象；<br>（3）工具类对象；<br>（4）频繁访问数据库或文件的对象。</p>
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li>需要频繁地进行创建和销毁的对象；</li>
+<li>创建对象时耗时过多或耗费资源过多，但又经常用到的对象；</li>
+<li>工具类对象；</li>
+<li>频繁访问数据库或文件的对象。</li>
+</ul>
 </blockquote>
 <p>通过单例类的构造函数私有化，使得客户端代码不能通过 new 的形式手动构造单例类的对象。单例类会暴露一个公有静态方法，客户端需要调用这个静态方法获取到单例类的唯一实例，在获取这个单例对象的过程中需要确保线程安全，即在多线程环境下构造单例类的对象也是有且只有一个，这也是单例模式实现中比较困难的地方。</p>
 <h2 id="饿汉式（静态常量）-可用"><a href="#饿汉式（静态常量）-可用" class="headerlink" title="饿汉式（静态常量）[可用]"></a><strong>饿汉式（静态常量）[可用]</strong></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Singleton instance = <span class="keyword">new</span> Singleton();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -328,6 +334,15 @@ var a = new Donate({
   
     
 <nav id="article-nav">
+  
+    <a href="../../14/理解 Java 的多态/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          理解 Java 的多态
+        
+      </div>
+    </a>
   
   
     <a href="../../../07/23/工作中如何做好技术积累/" id="article-nav-older" class="article-nav-link-wrap">

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>理解 java 的多态 | kevinyangI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+    <meta name="keywords" content="Java" />
+  
+  
+  
+  
+  <meta name="description" content="多态的概念
+多态的定义：指允许不同类的对象对同一函数调用做出响应，即同一函数调用可以根据发送对象的不同而采用多种不同的行为方式。
+实现多态的技术：动态绑定（dynamic binding），是指在执行期间判断所引用对象的实际类型，根据其实际类型调用相对应的方法。
+多态的作用：消除类型之间的耦合关系。
+
+
+
+Java实现多态有三个必要条件：继承、重写、向上转型。
+
+继承：在多态中必须存在有继承关系的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解 Java 的多态">
+<meta property="og:url" content="https://kevinyangI.github.io/2018/08/14/理解 Java 的多态/index.html">
+<meta property="og:site_name" content="kevinyangI">
+<meta property="og:description" content="多态的概念
+多态的定义：指允许不同类的对象对同一函数调用做出响应，即同一函数调用可以根据发送对象的不同而采用多种不同的行为方式。
+实现多态的技术：动态绑定（dynamic binding），是指在执行期间判断所引用对象的实际类型，根据其实际类型调用相对应的方法。
+多态的作用：消除类型之间的耦合关系。
+
+
+
+Java实现多态有三个必要条件：继承、重写、向上转型。
+
+继承：在多态中必须存在有继承关系的">
+<meta property="og:updated_time" content="2018-08-31T14:21:45.740Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解 Java 的多态">
+<meta name="twitter:description" content="多态的概念
+多态的定义：指允许不同类的对象对同一函数调用做出响应，即同一函数调用可以根据发送对象的不同而采用多种不同的行为方式。
+实现多态的技术：动态绑定（dynamic binding），是指在执行期间判断所引用对象的实际类型，根据其实际类型调用相对应的方法。
+多态的作用：消除类型之间的耦合关系。
+
+
+
+Java实现多态有三个必要条件：继承、重写、向上转型。
+
+继承：在多态中必须存在有继承关系的">
+  
+    <link rel="alternate" href="/atom.xml" title="kevinyangI" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/kevinyangI.github.io/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/kevinyangI.github.io/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="../../../../css/style.css">
+
+  <script src="../../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../../js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/kevinyangI.github.io/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="../../../../css/dialog.css">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/kevinyangI.github.io/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/kevinyangI.github.io/css/vdonate.css" >
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/kevinyangI.github.io/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">Home</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">Archives</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">Categories</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">Tags</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">About</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/kevinyangI.github.io/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="../../../../js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-理解 Java 的多态" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      理解 Java 的多态
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2018-08-14T02:37:50.000Z" itemprop="datePublished">2018-08-14</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/Java/">Java</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		PV:<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="多态的概念"><a href="#多态的概念" class="headerlink" title="多态的概念"></a><strong>多态的概念</strong></h2><blockquote>
+<p><strong>多态的定义</strong>：指允许不同类的对象对同一函数调用做出响应，即同一函数调用可以根据发送对象的不同而采用多种不同的行为方式。</p>
+<p><strong>实现多态的技术</strong>：动态绑定（dynamic binding），是指在执行期间判断所引用对象的实际类型，根据其实际类型调用相对应的方法。</p>
+<p><strong>多态的作用</strong>：消除类型之间的耦合关系。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>Java实现多态有三个必要条件：继承、重写、向上转型。</strong></p>
+<ul>
+<li>继承：在多态中必须存在有继承关系的子类和父类。</li>
+<li>重写：子类对父类中某些方法进行重新定义，在调用这些方法时就会调用子类的方法。</li>
+<li>向上转型：在多态中需要将父类引用指向子类对象，才能够调用父类和子类中的方法。</li>
+</ul>
+</blockquote>
+<p><strong> 最终多态体现为父类引用指向子类对象：父类类型 变量名 = new 子类类型()。</strong></p>
+<h2 id="多态的三种形式"><a href="#多态的三种形式" class="headerlink" title="多态的三种形式"></a><strong>多态的三种形式</strong></h2><p><strong>1. 普通类多态定义的格式：父类 变量名 = new 子类();</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"><span class="comment">//接口的多态使用</span></div><div class="line">Parent parent = <span class="keyword">new</span> Child();</div></pre></td></tr></table></figure></p>
+<p><strong>2. 抽象类多态定义的格式：抽象类 变量名 = new 子类();</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(“重写接口抽象方法”);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//接口的多态使用</span></div><div class="line">Parent parent = <span class="keyword">new</span> Child();</div></pre></td></tr></table></figure></p>
+<p><strong>3. 接口多态定义的格式：接口 变量名 = new 子类();</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">implements</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(“重写接口抽象方法”);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//接口的多态使用</span></div><div class="line">Parent parent = <span class="keyword">new</span> Child();</div></pre></td></tr></table></figure></p>
+<h2 id="多态实例分析"><a href="#多态实例分析" class="headerlink" title="多态实例分析"></a><strong>多态实例分析</strong></h2><h3 id="实例一-成员变量"><a href="#实例一-成员变量" class="headerlink" title="实例一 成员变量"></a><strong>实例一 成员变量</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> num = <span class="number">4</span>; <span class="comment">//没有这句会提示编译失败</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> num = <span class="number">5</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</div><div class="line">        Parent parent = <span class="keyword">new</span> Child();</div><div class="line">        System.out.println(parent.num);</div><div class="line">        Child child = <span class="keyword">new</span> Child();</div><div class="line">        System.out.println(child.num);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：4 5<br>总结：当子父类中出现同名的成员变量时，多态调用该变量时：<br>1、编译时期：参考的是引用型变量所属的类中是否有被调用的成员变量，若没有，编译失败。<br>2、运行时期：也是调用引用型变量所属的类中的成员变量。<br>简而言之：编译和运行都参考等号的左边，编译运行看左边。</p>
+<h3 id="实例二-成员方法"><a href="#实例二-成员方法" class="headerlink" title="实例二 成员方法"></a><strong>实例二 成员方法</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> num = <span class="number">4</span>;</div><div class="line">    <span class="comment">//没有这个方法，编译失败</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"Parent show num"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">Parent</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> num = <span class="number">5</span>;</div><div class="line">    <span class="comment">//重写父类方法</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"Child show num"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">void</span> show_1&#123;</div><div class="line">        System.out.println(<span class="string">"Child show show_1"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</div><div class="line">        Parent parent = <span class="keyword">new</span> Child();</div><div class="line">        parent.show();</div><div class="line">        <span class="comment">//parent.show_1();</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>打印结果：Child show num<br>总结：多态成员方法<br>1、编译时期：参考引用变量所属的类，如果没有类中没有调用的方法，编译失败（如果把 parent.show_1() 前面的注释打开，则编译失败）。<br>2、运行时期：参考引用变量所指的对象所属的类，并运行对象所属类中的成员方法（如果把子类重写的 show() 方法注释掉，那么打印的结果是 Parent show num）。<br>简而言之：编译看左边，运行看右边。</p>
+<h3 id="实例三-综合运用"><a href="#实例三-综合运用" class="headerlink" title="实例三 综合运用"></a><strong>实例三 综合运用</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">show</span><span class="params">(D obj)</span></span>&#123;              <span class="comment">//方法一</span></div><div class="line">        <span class="keyword">return</span> (<span class="string">"A and D"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">show</span><span class="params">(A obj)</span></span>&#123;              <span class="comment">//方法二</span></div><div class="line">        <span class="keyword">return</span> (<span class="string">"A and A"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">show</span><span class="params">(B obj)</span></span>&#123;              <span class="comment">//方法三</span></div><div class="line">        <span class="keyword">return</span> (<span class="string">"B and B"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">show</span><span class="params">(A obj)</span></span>&#123;              <span class="comment">//方法四</span></div><div class="line">        <span class="keyword">return</span> (<span class="string">"B and A"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="keyword">extends</span> <span class="title">B</span></span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> <span class="keyword">extends</span> <span class="title">B</span></span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test1</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        A a1 = <span class="keyword">new</span> A();</div><div class="line">        A a2 = <span class="keyword">new</span> B();</div><div class="line">        B b = <span class="keyword">new</span> B();</div><div class="line">        C c = <span class="keyword">new</span> C();</div><div class="line">        D d = <span class="keyword">new</span> D();</div><div class="line">        System.out.println(<span class="string">"1--"</span> + a1.show(b));</div><div class="line">        System.out.println(<span class="string">"2--"</span> + a1.show(c));</div><div class="line">        System.out.println(<span class="string">"3--"</span> + a1.show(d));</div><div class="line">        System.out.println(<span class="string">"4--"</span> + a2.show(b));</div><div class="line">        System.out.println(<span class="string">"5--"</span> + a2.show(c));</div><div class="line">        System.out.println(<span class="string">"6--"</span> + a2.show(d));</div><div class="line">        System.out.println(<span class="string">"7--"</span> + b.show(b));</div><div class="line">        System.out.println(<span class="string">"8--"</span> + b.show(c));</div><div class="line">        System.out.println(<span class="string">"9--"</span> + b.show(d));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>那我们开始分析输出 A a1 = new A()，这是普通的创建对象，故 a1 拥有调用方法一和方法二的能力。那么究竟调用哪个方法呢？这里面涉及方法的重载。其实，在编译的时候，编译器已经进行了前期绑定，也就是说，在编译时，系统就已经知道应该调用哪个方法，即使你有方法的重载。</p>
+<p>故 a1.show(b) 会与方法二绑定，a1.show(c) 会与方法二绑定，a1.show(d) 会与方法一绑定，且都在编译时完成绑定。</p>
+<p>但 A a2 = new B()，就涉及多态了，B 实现了向上转型，创建了一个父类引用，指向子类对象。这样的做法很常见，因为这样不仅增加了灵活性（父类引用可以随时指向任意子类对象），也提高了扩展性。但要知道的是，向上转型的缺点，就是不能调用子类中特有而父类中没有的方法。</p>
+<p>故 A a2 = new B() 中，方法四对方法二进行了重写，所以 a2 拥有调用方法一和方法四的能力，而方法三不能调用。所以，在编译时， a2.show(b) 会与方法四绑定；a2.show(c) 会与方法四绑定；a2.show(d) 会与方法一绑定。</p>
+<p>B b = new B()，这是普通的创建子类对象，B 继承于 A，且方法四重写了方法二，所以 b 拥有调用方法一、方法三、方法四的能力。所以 b.show(b) 会与方法三绑定，b.show(c) 会与方法三绑定，b.show(d) 会与方法一绑定。</p>
+<p>所以，打印结果是</p>
+<pre><code>1--A and A
+2--A and A
+3--A and D
+4--B and A
+5--B and A
+6--A and D
+7--B and B
+8--B and B
+9--A and D
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+<script src="../../../../js/vdonate.js"></script>
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: 'Donate', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: '/gallery/WeChatQR.jpg',
+  alipayImage: '/gallery/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>Post author:  </strong>kevinyangI</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>Post link:  </strong>
+          <a href="/kevinyangI.github.io/2018/08/14/理解 Java 的多态/" target="_blank" title="理解 Java 的多态">https://kevinyangI.github.io/2018/08/14/理解 Java 的多态/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>Copyright Notice:   </strong>
+            All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            unless stating additionally.
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="../../10/单例模式/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">单例模式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#多态的概念"><span class="nav-number">1.</span> <span class="nav-text">多态的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多态的三种形式"><span class="nav-number">2.</span> <span class="nav-text">多态的三种形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多态实例分析"><span class="nav-number">3.</span> <span class="nav-text">多态实例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例一-成员变量"><span class="nav-number">3.1.</span> <span class="nav-text">实例一 成员变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例二-成员方法"><span class="nav-number">3.2.</span> <span class="nav-text">实例二 成员方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例三-综合运用"><span class="nav-number">3.3.</span> <span class="nav-text">实例三 综合运用</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2018 kevinyangI All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				UV : <span id="busuanzi_value_site_uv"></span> |  
+				PV : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+  <script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+  <script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            kevinyangI
+          </div>
+          <div class="panel-body">
+            Copyright © 2018 kevinyangI All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
