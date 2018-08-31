@@ -17,7 +17,7 @@
 
 
 
-适用场景：（1）需要频繁地进行创建和销毁的对象；（2）创建对象时耗时过多或耗费资源过多，但又经常用">
+基本原理：将构造函数私有化，并且通过静态方法或枚举获取一个唯一的实例对象，在这个获取的过程中必须保">
 <meta property="og:type" content="article">
 <meta property="og:title" content="单例模式">
 <meta property="og:url" content="https://kevinyangI.github.io/2018/08/10/单例模式/index.html">
@@ -28,8 +28,8 @@
 
 
 
-适用场景：（1）需要频繁地进行创建和销毁的对象；（2）创建对象时耗时过多或耗费资源过多，但又经常用">
-<meta property="og:updated_time" content="2018-08-31T06:29:28.870Z">
+基本原理：将构造函数私有化，并且通过静态方法或枚举获取一个唯一的实例对象，在这个获取的过程中必须保">
+<meta property="og:updated_time" content="2018-08-31T07:20:04.870Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="单例模式">
 <meta name="twitter:description" content="在所有的设计模式中，单例模式是我们在项目开发中最为常见的设计模式之一，而单例模式有很多种实现方式，你是否都了解呢？高并发下如何保证单例模式的线程安全性呢？如何保证序列化后的单例对象在反序列化后仍然是单例的呢？
@@ -38,7 +38,7 @@
 
 
 
-适用场景：（1）需要频繁地进行创建和销毁的对象；（2）创建对象时耗时过多或耗费资源过多，但又经常用">
+基本原理：将构造函数私有化，并且通过静态方法或枚举获取一个唯一的实例对象，在这个获取的过程中必须保">
   
     <link rel="alternate" href="/atom.xml" title="kevinyangI" type="application/atom+xml">
   
@@ -217,11 +217,11 @@
 </blockquote>
 <hr>
 <blockquote>
-<p><strong>适用场景</strong>：（1）需要频繁地进行创建和销毁的对象；（2）创建对象时耗时过多或耗费资源过多，但又经常用到的对象；（3）工具类对象；（4）频繁访问数据库或文件的对象。</p>
+<p><strong>基本原理</strong>：将构造函数私有化，并且通过静态方法或枚举获取一个唯一的实例对象，在这个获取的过程中必须保证线程安全、防止反序列化导致重新生成实例对象等问题。</p>
 </blockquote>
 <hr>
 <blockquote>
-<p><strong>注意</strong>：（1）构造函数私有；（2）通过一个静态方法或枚举返回单例类对象；（3）确保单例类对象有且只有一个，尤其是在多线程环境下；（4）确保单例类对象在反序列化时不会重新构建对象。</p>
+<p><strong>适用场景</strong>：<br>（1）需要频繁地进行创建和销毁的对象；<br>（2）创建对象时耗时过多或耗费资源过多，但又经常用到的对象；<br>（3）工具类对象；<br>（4）频繁访问数据库或文件的对象。</p>
 </blockquote>
 <p>通过单例类的构造函数私有化，使得客户端代码不能通过 new 的形式手动构造单例类的对象。单例类会暴露一个公有静态方法，客户端需要调用这个静态方法获取到单例类的唯一实例，在获取这个单例对象的过程中需要确保线程安全，即在多线程环境下构造单例类的对象也是有且只有一个，这也是单例模式实现中比较困难的地方。</p>
 <h2 id="饿汉式（静态常量）-可用"><a href="#饿汉式（静态常量）-可用" class="headerlink" title="饿汉式（静态常量）[可用]"></a><strong>饿汉式（静态常量）[可用]</strong></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Singleton instance = <span class="keyword">new</span> Singleton();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -252,6 +252,11 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">enum</span> EnumFactory&#123;</div><div class="line">    singletonFactory;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Singleton instance;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EnumFactory</span><span class="params">()</span></span>&#123; <span class="comment">//枚举类的构造方法在类加载时被实例化</span></div><div class="line">        instance = <span class="keyword">new</span> Singleton();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123; <span class="comment">//需要获实现单例的类</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这样写单例虽然得到了保证，但是枚举类具体实现被完全暴露了，下面是内部枚举类的实现。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassFactory</span></span>&#123; </div><div class="line">	</div><div class="line">    <span class="keyword">private</span> <span class="keyword">enum</span> EnumSingleton&#123;</div><div class="line">        singletonFactory;</div><div class="line">		</div><div class="line">        <span class="keyword">private</span> Singleton instance;</div><div class="line">		</div><div class="line">        <span class="function"><span class="keyword">private</span> <span class="title">EnumSingleton</span><span class="params">()</span></span>&#123; <span class="comment">//枚举类的构造方法在类加载时被实例化</span></div><div class="line">            instance = <span class="keyword">new</span> Singleton();</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        <span class="function"><span class="keyword">public</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</div><div class="line">            <span class="keyword">return</span> instance;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> EnumSingleton.singletonFactory.getInstance();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123; <span class="comment">//需要获实现单例的类</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h2><p>单例模式是运用频率很高的模式，但是，由于在客户端通常没有高并发的情况，因此，选择哪种实现方式并不会有太大的影响。即便如此，出于效率考虑，推荐使用双检查锁机制和静态内部类实现的方式。</p>
+<blockquote>
+<p><strong>优点</strong>:<br>（1）由于单例模式在内存中只有一个实例，减少了内存开支，特别是一个对象需要频繁地创建、销毁时，而且创建或销毁时性能又无法优化，单例模式的优势就非常明显。<br>（2）由于单例模式只生成一个实例，所以，减少了系统的性能开销，当一个对象的产生需要比较多的资源时，如读取配置、产生其他依赖对象时，则可以通过在应用启动时直接产生一个单例对象，然后用永久驻留内存的方式来解决。<br>（3）单例模式可以避免对资源的多重占用，例如一个写文件操作，由于只有一个实例存在内存中，避免对同一个资源文件的同时写操作。<br>（4）单例模式可以在系统设置全局的访问点，优化和共享资源访问，例如，可以设计一个单例类，负责所有数据表的映射处理。</p>
+<p><strong>缺点</strong>：<br>（1）单例模式一般没有接口，扩展很困难，若要扩展，除了修改代码基本上没有第二种途径可以实现。<br>（2）单例对象如果持有 Context，那么很容易引发内存泄漏，此时需要注意传递给单例对象的 Context 最好是 Application Context。</p>
+</blockquote>
 
       
     </div>
@@ -341,7 +346,7 @@ var a = new Donate({
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单例模式定义"><span class="nav-number">1.</span> <span class="nav-text">单例模式定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#饿汉式（静态常量）-可用"><span class="nav-number">2.</span> <span class="nav-text">饿汉式（静态常量）[可用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#饿汉式（静态代码块）-可用"><span class="nav-number">3.</span> <span class="nav-text">饿汉式（静态代码块）[可用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#懒汉式（线程不安全）-不可用"><span class="nav-number">4.</span> <span class="nav-text">懒汉式（线程不安全）[不可用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#懒汉式（线程安全，同步方法）-不推荐用"><span class="nav-number">5.</span> <span class="nav-text">懒汉式（线程安全，同步方法）[不推荐用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#懒汉式（线程安全，同步代码块）-不可用"><span class="nav-number">6.</span> <span class="nav-text">懒汉式（线程安全，同步代码块）[不可用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#双重检查（线程安全）-推荐用"><span class="nav-number">7.</span> <span class="nav-text">双重检查（线程安全）[推荐用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态内部类（线程安全）-推荐用"><span class="nav-number">8.</span> <span class="nav-text">静态内部类（线程安全）[推荐用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#序列化与反序列化（线程安全）-推荐用"><span class="nav-number">9.</span> <span class="nav-text">序列化与反序列化（线程安全）[推荐用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#枚举（线程安全）-推荐"><span class="nav-number">10.</span> <span class="nav-text">枚举（线程安全）[推荐]</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单例模式定义"><span class="nav-number">1.</span> <span class="nav-text">单例模式定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#饿汉式（静态常量）-可用"><span class="nav-number">2.</span> <span class="nav-text">饿汉式（静态常量）[可用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#饿汉式（静态代码块）-可用"><span class="nav-number">3.</span> <span class="nav-text">饿汉式（静态代码块）[可用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#懒汉式（线程不安全）-不可用"><span class="nav-number">4.</span> <span class="nav-text">懒汉式（线程不安全）[不可用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#懒汉式（线程安全，同步方法）-不推荐用"><span class="nav-number">5.</span> <span class="nav-text">懒汉式（线程安全，同步方法）[不推荐用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#懒汉式（线程安全，同步代码块）-不可用"><span class="nav-number">6.</span> <span class="nav-text">懒汉式（线程安全，同步代码块）[不可用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#双重检查（线程安全）-推荐用"><span class="nav-number">7.</span> <span class="nav-text">双重检查（线程安全）[推荐用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态内部类（线程安全）-推荐用"><span class="nav-number">8.</span> <span class="nav-text">静态内部类（线程安全）[推荐用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#序列化与反序列化（线程安全）-推荐用"><span class="nav-number">9.</span> <span class="nav-text">序列化与反序列化（线程安全）[推荐用]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#枚举（线程安全）-推荐"><span class="nav-number">10.</span> <span class="nav-text">枚举（线程安全）[推荐]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">11.</span> <span class="nav-text">总结</span></a></li></ol>
     
     </div>
   </aside>
