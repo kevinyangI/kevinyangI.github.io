@@ -259,6 +259,59 @@
         
           <section id="main" style="float:none;">
   
+    <article id="post-理解==、equals 和 hashcode 的区别"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="2018/08/16/理解==、equals 和 hashcode 的区别/">理解 ==、equals 和 hashcode 的区别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="2018/08/16/理解==、equals 和 hashcode 的区别/" class="article-date">
+	  <time datetime="2018-08-16T02:37:50.000Z" itemprop="datePublished">2018-08-16</time>
+	</a>
+
+      
+    <a class="article-category-link" href="categories/Java/">Java</a>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p class="article-excerpt-content">
+          ==java 中的数据类型，可分为两类：
+1、基本数据类型byte，short，char，int，long，float，double，boolean 他们之间的比较，应用双等号（==），比较的是他们的值。 
+2、引用类型(类、接口、数组)当他们用（==）进行比较的时候，比较的是他们在内存中的存放地址，所以，除非是同一个 new 出来的对象，他们的比较后的结果为 true，否则比较后结果为 false。
+对象是放在堆中的，栈中存放的是对象的引用（地址）。由此可见 ‘==’ 是对栈中的值进行比...
+        </p>
+        <p class="article-more-link">
+          <a href="2018/08/16/理解==、equals 和 hashcode 的区别/#more">Read More</a>
+        </p>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+      
+
+    </footer>
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
     <article id="post-理解 Integer 和 int"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="article-inner">
     
@@ -287,9 +340,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p class="article-excerpt-content">
-          基础类型和封装类型的区别
-1、传递方式不同封装类是引用类型，基本类型（原始数据类型）在传递参数时都是按值传递，而封装类型是按引用传递的(其实“引用也是按值传递的”，传递的是对象的地址)。由于引用类型都是不可变量，因此没有提供改变它的值的方法，增加了对“按引用传递”的理解难度。int是基本类型，直接存放数值；Integer是类，产生对象时用一个引用指向这个对象。
-2、封装类可以有方法和属性封装类可以有方法和属性，利用这些方法和属性来处理数据，如 Integer.parseInt(String...
+          基础类型和封装类型的区别1、传递方式不同封装类是引用类型，基本类型（原始数据类型）在传递参数时都是按值传递，而封装类型是按引用传递的(其实“引用也是按值传递的”，传递的是对象的地址)。由于引用类型都是不可变量，因此没有提供改变它的值的方法，增加了对“按引用传递”的理解难度。int 是基本类型，直接存放数值；Integer 是类，产生对象时用一个引用指向这个对象。
+2、封装类可以有方法和属性封装类可以有方法和属性，利用这些方法和属性来处理数据，如 Integer.parseInt(Strin...
         </p>
         <p class="article-more-link">
           <a href="2018/08/15/理解 Integer 和 int/#more">Read More</a>
@@ -843,61 +895,6 @@ You are given two non-empty linked lists representing two non-negative integers.
         </p>
         <p class="article-more-link">
           <a href="2017/08/28/leetcode-2/#more">Read More</a>
-        </p>
-      
-    </div>
-    <footer class="article-footer">
-      
-      
-      
-      
-
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-
-  
-    <article id="post-leetcode-1"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="2017/08/20/leetcode-1/">Two Sum || LeetCode-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	<a href="2017/08/20/leetcode-1/" class="article-date">
-	  <time datetime="2017-08-20T02:50:55.000Z" itemprop="datePublished">2017-08-20</time>
-	</a>
-
-      
-    <a class="article-category-link" href="categories/leetcode/">leetcode</a>
-
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p class="article-excerpt-content">
-          
-Problem link： https://leetcode.com/problems/3sum-closest/#/description
-
-Given an array of integers, return indices of the two numbers such that they add up to a specific target.
-
-You may assume that each input would have exactly one solution, and...
-        </p>
-        <p class="article-more-link">
-          <a href="2017/08/20/leetcode-1/#more">Read More</a>
         </p>
       
     </div>
