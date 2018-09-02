@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>如何在java中避免equals方法的隐藏陷阱 | kevinyangI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+    <meta name="keywords" content="Java" />
+  
+  
+  
+  
+  <meta name="description" content="译文原文： 如何在 Java 中避免 equals 方法的隐藏陷阱英文原文： How to Write an Equality Method in Java
+
+摘要本文描述重载 equals 方法的技术，这种技术即使是具现类的子类增加了字段也能保证 equal 语义的正确性。
+在《Effective Java》的第8项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在Java中避免equals方法的隐藏陷阱">
+<meta property="og:url" content="https://kevinyangI.github.io/2018/08/16/如何在 Java 中避免 equals 方法的隐藏陷阱/index.html">
+<meta property="og:site_name" content="kevinyangI">
+<meta property="og:description" content="译文原文： 如何在 Java 中避免 equals 方法的隐藏陷阱英文原文： How to Write an Equality Method in Java
+
+摘要本文描述重载 equals 方法的技术，这种技术即使是具现类的子类增加了字段也能保证 equal 语义的正确性。
+在《Effective Java》的第8项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题">
+<meta property="og:updated_time" content="2018-09-02T12:11:11.406Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何在Java中避免equals方法的隐藏陷阱">
+<meta name="twitter:description" content="译文原文： 如何在 Java 中避免 equals 方法的隐藏陷阱英文原文： How to Write an Equality Method in Java
+
+摘要本文描述重载 equals 方法的技术，这种技术即使是具现类的子类增加了字段也能保证 equal 语义的正确性。
+在《Effective Java》的第8项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题">
+  
+    <link rel="alternate" href="/atom.xml" title="kevinyangI" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/kevinyangI.github.io/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/kevinyangI.github.io/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="../../../../css/style.css">
+
+  <script src="../../../../js/jquery-3.1.1.min.js"></script>
+  <script src="../../../../js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/kevinyangI.github.io/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="../../../../css/dialog.css">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/kevinyangI.github.io/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/kevinyangI.github.io/css/vdonate.css" >
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/kevinyangI.github.io/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="../../../../index.html">Home</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../archives">Archives</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../categories">Categories</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../tags">Tags</a> </li>
+                
+                  <li> <a class="main-nav-link" href="../../../../about">About</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/kevinyangI.github.io/',
+        CONTENT_URL: '../../../../content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="../../../../js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-如何在 Java 中避免 equals 方法的隐藏陷阱" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      如何在Java中避免equals方法的隐藏陷阱
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="" class="article-date">
+	  <time datetime="2018-08-16T03:58:55.000Z" itemprop="datePublished">2018-08-16</time>
+	</a>
+
+      
+    <a class="article-category-link" href="../../../../categories/Java/">Java</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		PV:<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p><strong>译文原文</strong>： <a href="https://coolshell.cn/articles/1051.html" target="_blank" rel="external"><strong>如何在 Java 中避免 equals 方法的隐藏陷阱</strong></a><br><strong>英文原文</strong>： <a href="https://www.artima.com/lejava/articles/equality.html" target="_blank" rel="external"><strong>How to Write an Equality Method in Java</strong></a></p>
+</blockquote>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a><strong>摘要</strong></h2><p>本文描述重载 equals 方法的技术，这种技术即使是具现类的子类增加了字段也能保证 equal 语义的正确性。</p>
+<p>在《Effective Java》的第8项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题，要保证派生类的 equal 正确性语义所会面对的困难。Bloch 这样写到：</p>
+<blockquote>
+<p><strong>除非你忘记了面向对象抽象的好处，否则在当你继承一个新类或在类中增加了一个值组件时你无法同时保证 equal 的语义依然正确。</strong></p>
+</blockquote>
+<p>在《Programming in Scala》中的第 28 章演示了一种方法，这种方法允许即使继承了新类，增加了新的值组件，equal 的语义仍然能得到保证。虽然在这本书中这项技术是在使用 Scala 类环境中，但是这项技术同样可以应用于 Java 定义的类中。在本文中的描述来自于 Programming in Scala 中的文字描述，但是代码被我从 scala 翻译成了 Java。</p>
+<h2 id="常见的等价方法陷阱"><a href="#常见的等价方法陷阱" class="headerlink" title="常见的等价方法陷阱"></a><strong>常见的等价方法陷阱</strong></h2><p>java.lang.Object 类定义了 equals 这个方法，它的子类可以通过重载来覆盖它。不幸的是，在面向对象中写出正确的 equals 方法是非常困难的。事实上，在研究了大量的 Java 代码后，2007 paper 的作者得出了如下的一个结论：</p>
+<blockquote>
+<p><strong>几乎所有的equals方法的实现都是错误的！</strong></p>
+</blockquote>
+<p>这个问题是因为等价是和很多其他的事物相关联。例如其中之一，一个的类型C的错误等价方法可能意味着你无法将这个类型C的对象可信赖的放入到容器中。比如说，你有两个元素 elem1 和 elem2 他们都是类型 C 的对象，并且他们是相等，即 elem1.equals(elm2) 返回 ture。但是，只要这个 equals 方法是错误的实现，那么你就有可能会看见如下的一些行为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Set hashSet&lt;C&gt; = <span class="keyword">new</span> java.util.HashSet&lt;C&gt;();</div><div class="line">hashSet.add(elem1);</div><div class="line">hashSet.contains(elem2);    <span class="comment">// returns false!&lt;/pre&gt;</span></div></pre></td></tr></table></figure>
+<p><strong>当 equals 重载时，这里有 4 个会引发 equals 行为不一致的常见陷阱：</strong></p>
+<p><strong>1、定义了错误的 equals 方法签名(signature)。Defining equals with the wrong signature.</strong></p>
+<p><strong>2、重载了 equals 方法但没有同时重载 hashCode 方法。Changing equals without also changing hashCode.</strong></p>
+<p><strong>3、建立在会变化字域上的 equals 定义。Defining equals in terms of mutable fields.</strong></p>
+<p><strong>4、不满足等价关系的 equals 错误定义。Failing to define equals as an equivalence relation.</strong></p>
+<p>在剩下的章节中我们将依次讨论这 4 种陷阱。</p>
+<h3 id="陷阱1：定义错误-equals-方法签名-signature"><a href="#陷阱1：定义错误-equals-方法签名-signature" class="headerlink" title="陷阱1：定义错误 equals 方法签名(signature)"></a><strong>陷阱1：定义错误 equals 方法签名(signature)</strong></h3><p>考虑为下面这个简单类 Point 增加一个等价性方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> x;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> y;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Point</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.x = x;</div><div class="line">        <span class="keyword">this</span>.y = y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> x;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>看上去非常明显，但是按照这种方式来定义 equals 就是错误的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// An utterly wrong definition of equals</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Point other)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> (<span class="keyword">this</span>.getX() == other.getX() &amp;&amp; <span class="keyword">this</span>.getY() == other.getY());</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个方法有什么问题呢？初看起来，它工作的非常完美：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Point p1 = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">2</span>);</div><div class="line">Point p2 = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">2</span>);</div><div class="line"></div><div class="line">Point q = <span class="keyword">new</span> Point(<span class="number">2</span>, <span class="number">3</span>);</div><div class="line"></div><div class="line">System.out.println(p1.equals(p2)); <span class="comment">// prints true</span></div><div class="line"></div><div class="line">System.out.println(p1.equals(q)); <span class="comment">// prints false</span></div></pre></td></tr></table></figure></p>
+<p>然而，当我们一旦把这个 Point 类的实例放入到一个容器中问题就出现了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.util.HashSet;</div><div class="line"></div><div class="line">HashSet&lt;Point&gt; coll = <span class="keyword">new</span> HashSet&lt;Point&gt;();</div><div class="line">coll.add(p1);</div><div class="line"></div><div class="line">System.out.println(coll.contains(p2)); <span class="comment">// prints false</span></div></pre></td></tr></table></figure>
+<p>为什么 coll 中没有包含 p2 呢？甚至是 p1 也被加到集合里面，p1 和 p2 是是等价的对象吗？在下面的程序中，我们可以找到其中的一些原因，定义 p2a 是一个指向 p2 的对象，但是 p2a 的类型是 Object 而非 Point 类型：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Object p2a = p2;</div></pre></td></tr></table></figure></p>
+<p>现在我们重复第一个比较，但是不再使用 p2 而是 p2a，我们将会得到如下的结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(p1.equals(p2a)); <span class="comment">// prints false</span></div></pre></td></tr></table></figure></p>
+<p>到底是那里出了了问题？事实上，之前所给出的 equals 版本并没有覆盖 Object 类的 equals 方法，因为他的类型不同。下面是 Object 的 equals 方法的定义：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span></span></div></pre></td></tr></table></figure></p>
+<p>因为 Point 类中的 equals 方法使用的是以 Point 类而非 Object 类做为参数，因此它并没有覆盖 Object 中的 equals 方法。而是一种变化了的重载。在 Java 中重载被解析为静态的参数类型而非运行期的类型，因此当静态参数类型是 Point，Point 的 equals 方法就被调用。然而当静态参数类型是 Object 时，Object 类的 equals 就被调用。因为这个方法并没有被覆盖，因此它仍然是实现成比较对象标示。这就是为什么虽然 p1 和 p2a 具有同样的 x，y 值， “p1.equals(p2a)” 仍然返回了 false。这也是会什么 HasSet 的 contains 方法返回 false 的原因，因为这个方法操作的是泛型，他调用的是一般化的 Object 上 equals 方法而非 Point 类上变化了的重载方法 equals。</p>
+<p>一个更好但不完美的equals方法定义如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// A better definition, but still not perfect</span></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">if</span> (other <span class="keyword">instanceof</span> Point) &#123;</div><div class="line">        Point that = (Point) other;</div><div class="line">        result = (<span class="keyword">this</span>.getX() == that.getX() &amp;&amp; <span class="keyword">this</span>.getY() == that.getY());</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>现在 equals 有了正确的类型，它使用了一个 Object 类型的参数和一个返回布尔型的结果。这个方法的实现使用 instanceof 操作和做了一个造型。它首先检查这个对象是否是一个 Point 类，如果是，他就比较两个点的坐标并返回结果，否则返回 false。</p>
+<h3 id="陷阱2：重载了-equals-的但没有同时重载-hashCode-的方法"><a href="#陷阱2：重载了-equals-的但没有同时重载-hashCode-的方法" class="headerlink" title="陷阱2：重载了 equals 的但没有同时重载 hashCode 的方法"></a><strong>陷阱2：重载了 equals 的但没有同时重载 hashCode 的方法</strong></h3><p>如果你使用上一个定义的 Point 类进行 p1 和 p2a 的反复比较，你都会得到你预期的 true 的结果。但是如果你将这个类对象放入到 HashSet.contains() 方法中测试，你就有可能仍然得到 false 的结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Point p1 = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">2</span>);</div><div class="line">Point p2 = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">2</span>);</div><div class="line"></div><div class="line">HashSet&lt;Point&gt; coll = <span class="keyword">new</span> HashSet&lt;Point&gt;();</div><div class="line">coll.add(p1);</div><div class="line"></div><div class="line">System.out.println(coll.contains(p2)); <span class="comment">// 打印 false (有可能)</span></div></pre></td></tr></table></figure></p>
+<p>事实上，这个个结果不是 100% 的 false，你也可能有返回 ture 的经历。如果你得到的结果是 true 的话，那么你试试其他的坐标值，最终你一定会得到一个在集合中不包含的结果。导致这个结果的原因是 Point 重载了 equals 却没有重载 hashCode。</p>
+<p>注意上面例子的的容器是一个 HashSet，这就意味着容器中的元素根据他们的哈希码被被放入到 “哈希桶 hash buckets” 中。contains 方法首先根据哈希码在哈希桶中查找，然后让桶中的所有元素和所给的参数进行比较。现在，虽然最后一个 Point 类的版本重定义了 equals 方法，但是它并没有同时重定义 hashCode。因此，hashCode 仍然是 Object 类的那个版本，即：所分配对象的一个地址的变换。所以 p1 和 p2 的哈希码理所当然的不同了，甚至是即时这两个点的坐标完全相同。不同的哈希码导致他们具有极高的可能性被放入到集合中不同的哈希桶中。contains 方法将会去找 p2 的哈希码对应哈希桶中的匹配元素。但是大多数情况下，p1 一定是在另外一个桶中，因此，p2 永远找不到 p1 进行匹配。当然 p1 和 p2 也可能偶尔会被放入到一个桶中，在这种情况下，contains 的结果就为true了。</p>
+<p>最新一个 Point 类实现的问题是，它的实现违背了作为 Object 类的定义的 hashCode 的语义。</p>
+<blockquote>
+<p><strong>如果两个对象根据 equals(Object) 方法是相等的，那么在这两个对象上调用 hashCode 方法应该产生同样的值。</strong></p>
+</blockquote>
+<p>事实上，在 Java 中，hashCode 和 equals 需要一起被重定义是众所周知的。此外，hashCode 只可以依赖于 equals 依赖的域来产生值。对于 Point 这个类来说，下面的的 hashCode 定义是一个非常合适的定义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> x;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> y;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Point</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.x = x;</div><div class="line">        <span class="keyword">this</span>.y = y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> x;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (other <span class="keyword">instanceof</span> Point) &#123;</div><div class="line">            Point that = (Point) other;</div><div class="line">            result = (<span class="keyword">this</span>.getX() == that.getX() &amp;&amp; <span class="keyword">this</span>.getY() == that.getY());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="number">41</span> * (<span class="number">41</span> + getX()) + getY());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这只是 hashCode 一个可能的实现。x 域加上常量 41 后的结果再乘与 41 并将结果在加上 y 域的值。这样做就可以以低成本的运行时间和低成本代码大小得到一个哈希码的合理的分布。</p>
+<p>增加 hashCode 方法重载修正了定义类似 Point 类等价性的问题。然而，关于类的等价性仍然有其他的问题点待发现。</p>
+<h3 id="陷阱3：建立在会变化字段上的equals定义"><a href="#陷阱3：建立在会变化字段上的equals定义" class="headerlink" title="陷阱3：建立在会变化字段上的equals定义"></a><strong>陷阱3：建立在会变化字段上的equals定义</strong></h3><p>让我们在 Point 类做一个非常微小的变化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> x;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> y;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Point</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.x = x;</div><div class="line">        <span class="keyword">this</span>.y = y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> x;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123; <span class="comment">// Problematic</span></div><div class="line">        <span class="keyword">this</span>.x = x;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.y = y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (other <span class="keyword">instanceof</span> Point) &#123;</div><div class="line">            Point that = (Point) other;</div><div class="line">            result = (<span class="keyword">this</span>.getX() == that.getX() &amp;&amp; <span class="keyword">this</span>.getY() == that.getY());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="number">41</span> * (<span class="number">41</span> + getX()) + getY());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>唯一的不同是 x 和 y 域不再是 final，并且两个 set 方法被增加到类中来，并允许客户改变 x 和 y 的值。equals 和 hashCode 这个方法的定义现在是基于在这两个会发生变化的域上，因此当他们的域的值改变时，结果也就跟着改变。因此一旦你将这个 point 对象放入到集合中你将会看到非常神奇的效果。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Point p = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">2</span>);</div><div class="line"></div><div class="line">HashSet&lt;Point&gt; coll = <span class="keyword">new</span> HashSet&lt;Point&gt;();</div><div class="line">coll.add(p);</div><div class="line"></div><div class="line">System.out.println(coll.contains(p)); <span class="comment">// 打印 true</span></div></pre></td></tr></table></figure></p>
+<p>现在如果你改变 p 中的一个域，这个集合中还会包含 point 吗？我们将拭目以待。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">p.setX(p.getX() + <span class="number">1</span>);</div><div class="line"></div><div class="line">System.out.println(coll.contains(p)); <span class="comment">// (有可能)打印 false</span></div></pre></td></tr></table></figure></p>
+<p>看起来非常的奇怪。p 去哪里去了？如果你通过集合的迭代器来检查 p 是否包含，你将会得到更奇怪的结果。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Iterator&lt;Point&gt; it = coll.iterator();</div><div class="line"><span class="keyword">boolean</span> containedP = <span class="keyword">false</span>;</div><div class="line"><span class="keyword">while</span> (it.hasNext()) &#123;</div><div class="line">    Point nextP = it.next();</div><div class="line">    <span class="keyword">if</span> (nextP.equals(p)) &#123;</div><div class="line">        containedP = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">System.out.println(containedP); <span class="comment">// 打印 true</span></div></pre></td></tr></table></figure></p>
+<p>结果是，集合中不包含 p，但是 p 在集合的元素中！到底发生了什么！当然，所有的这一切都是在 x 域的修改后才发生的，p 最终的的 hashCode 是在集合 coll 错误的哈希桶中。即，原始哈希桶不再有其新值对应的哈希码。换句话说，p 已经在集合 coll 的视野范围之外，虽然他仍然属于 coll 的元素。</p>
+<p>从这个例子所得到的教训是，当 equals 和 hashCode 依赖于会变化的状态时，那么就会给用户带来问题。如果这样的对象被放入到集合中，用户必须小心，不要修改这些这些对象所依赖的状态，这是一个小陷阱。如果你需要根据对象当前的状态进行比较的话，你应该不要再重定义 equals，应该起其他的方法名字而不是 equals。对于我们的 Point 类的最后的定义，我们最好省略掉 hashCode 的重载，并将比较的方法名命名为 equalsContents，或其他不同于 equals 的名字。那么 Point 将会继承原来默认的 equals 和 hashCode 的实现，因此当我们修改了 x 域后 p 依然会呆在其原来在容器中应该在位置。</p>
+<h3 id="陷阱4：不满足等价关系的equals错误定义"><a href="#陷阱4：不满足等价关系的equals错误定义" class="headerlink" title="陷阱4：不满足等价关系的equals错误定义"></a><strong>陷阱4：不满足等价关系的equals错误定义</strong></h3><p>Object 中的 equals 的规范阐述了 equals 方法必须实现在非 null 对象上的等价关系：</p>
+<ul>
+<li>自反原则：对于任何非 null 值 X，表达式 x.equals(x) 总返回 true。</li>
+<li>等价性：对于任何非空值 x 和 y，那么当且仅当 y.equals(x) 返回真时，x.equals(y) 返回真。</li>
+<li>传递性：对于任何非空值 x，y 和 z，如果 x.equals(y) 返回真，且 y.equals(z) 也返回真，那么 x.equals(z) 也应该返回真。</li>
+<li>一致性：对于非空 x，y，多次调用 x.equals(y) 应该一致的返回真或假。提供给 equals 方法比较使用的信息不应该包含改过的信息。</li>
+<li>对于任何非空值 x，x.equals(null) 应该总返回 false.</li>
+</ul>
+<p>Point 类的 equals 定义已经被开发成了足够满足 equals 规范的定义。然而，当考虑到继承的时候，事情就开始变得非常复杂起来。比如说有一个 Point 的子类 ColoredPoint，它比 Point 多增加了一个类型是 Color 的 color 域。假设 Color 被定义为一个枚举类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Color &#123;</div><div class="line">    RED, ORANGE, YELLOW, GREEN, BLUE, INDIGO, VIOLET;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ColoredPoint 重载了 equals 方法，并考虑到新加入 color 域，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ColoredPoint</span> <span class="keyword">extends</span> <span class="title">Point</span> </span>&#123; <span class="comment">// Problem: equals not symmetric</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Color color;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ColoredPoint</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, Color color)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(x, y);</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (other <span class="keyword">instanceof</span> ColoredPoint) &#123;</div><div class="line">            ColoredPoint that = (ColoredPoint) other;</div><div class="line">            result = (<span class="keyword">this</span>.color.equals(that.color) &amp;&amp; <span class="keyword">super</span>.equals(that));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这是很多程序员都有可能写成的代码。注意在本例中，类 ColoredPointed 不需要重载 hashCode，因为新的 ColoredPoint 类上的 equals 定义，严格的重载了 Point上equals 的定义。hashCode 的规范仍然是有效，如果两个着色点 (colored point) 相等，其坐标必定相等，因此它的 hashCode 也保证了具有同样的值。</p>
+<p>对于 ColoredPoint 类自身对象的比较是没有问题的，但是如果使用 ColoredPoint 和 Point 混合进行比较就要出现问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Point p = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">2</span>);</div><div class="line"></div><div class="line">ColoredPoint cp = <span class="keyword">new</span> ColoredPoint(<span class="number">1</span>, <span class="number">2</span>, Color.RED);</div><div class="line"></div><div class="line">System.out.println(p.equals(cp)); <span class="comment">// 打印真 true</span></div><div class="line"></div><div class="line">System.out.println(cp.equals(p)); <span class="comment">// 打印假 false</span></div></pre></td></tr></table></figure>
+<p>“p等价于cp” 的比较这个调用的是定义在 Point 类上的 equals 方法。这个方法只考虑两个点的坐标。因此比较返回真。在另外一方面，“cp等价于p” 的比较这个调用的是定义在 ColoredPoint 类上的 equals 方法，返回的结果却是 false，这是因为 p 不是 ColoredPoint，所以 equals 这个定义违背了对称性。</p>
+<p>违背对称性对于集合来说将导致不可以预期的后果，例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Set&lt;Point&gt; hashSet1 = <span class="keyword">new</span> java.util.HashSet&lt;Point&gt;();</div><div class="line">hashSet1.add(p);</div><div class="line">System.out.println(hashSet1.contains(cp));    <span class="comment">// 打印 false</span></div><div class="line"></div><div class="line">Set&lt;Point&gt; hashSet2 = <span class="keyword">new</span> java.util.HashSet&lt;Point&gt;();</div><div class="line">hashSet2.add(cp);</div><div class="line">System.out.println(hashSet2.contains(p));    <span class="comment">// 打印 true</span></div></pre></td></tr></table></figure></p>
+<p>因此虽然 p 和 cp 是等价的，但是 contains 测试中一个返回成功，另外一个却返回失败。</p>
+<p>你如何修改 equals 的定义，才能使得这个方法满足对称性？本质上说有两种方法，你可以使得这种关系变得更一般化或更严格。更一般化的意思是这一对对象，a 和 b，被用于进行对比，无论是 a 比 b 还是 b 比 a 都返回true，下面是代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ColoredPoint</span> <span class="keyword">extends</span> <span class="title">Point</span> </span>&#123; <span class="comment">// Problem: equals not transitive</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Color color;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ColoredPoint</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, Color color)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(x, y);</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (other <span class="keyword">instanceof</span> ColoredPoint) &#123;</div><div class="line">            ColoredPoint that = (ColoredPoint) other;</div><div class="line">            result = (<span class="keyword">this</span>.color.equals(that.color) &amp;&amp; <span class="keyword">super</span>.equals(that));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (other <span class="keyword">instanceof</span> Point) &#123;</div><div class="line">            Point that = (Point) other;</div><div class="line">            result = that.equals(<span class="keyword">this</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在 ColoredPoint 中的 equals 的新定义比老定义中检查了更多的情况：如果对象是一个 Point 对象而不是 ColoredPoint，方法就转变为 Point 类的 equals 方法调用。这个所希望达到的效果就是 equals 的对称性，不管 “cp.equals(p)” 还是 “p.equals(cp)” 的结果都是 true。然而这种方法，equals 的规范还是被破坏了，现在的问题是这个新等价性不满足传递性。考虑下面的一段代码实例，定义了一个点和这个点上上两种不同颜色点：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ColoredPoint redP = <span class="keyword">new</span> ColoredPoint(<span class="number">1</span>, <span class="number">2</span>, Color.RED);</div><div class="line">ColoredPoint blueP = <span class="keyword">new</span> ColoredPoint(<span class="number">1</span>, <span class="number">2</span>, Color.BLUE);</div></pre></td></tr></table></figure></p>
+<p>redP 等价于 p，p 等价于 blueP<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">System.out.println(redP.equals(p)); <span class="comment">// prints true</span></div><div class="line"></div><div class="line">System.out.println(p.equals(blueP)); <span class="comment">// prints true</span></div></pre></td></tr></table></figure></p>
+<p>然而，对比 redP 和 blueP 的结果是 false:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">System.out.println(redP.equals(blueP)); <span class="comment">// 打印 false</span></div></pre></td></tr></table></figure></p>
+<p>因此，equals的传递性就被违背了。</p>
+<p>使 equals 的关系更一般化似乎会将我们带入到死胡同。我们应该采用更严格化的方法。一种更严格化的 equals 方法是认为不同类的对象是不同的。这个可以通过修改 Point 类和 ColoredPoint 类的 equals 方法来达到。你能增加额外的比较来检查是否运行态的这个 Point 类和那个 Point 类是同一个类，就像如下所示的代码一样：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// A technically valid, but unsatisfying, equals method</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> x;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> y;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Point</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.x = x;</div><div class="line">        <span class="keyword">this</span>.y = y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> x;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (other <span class="keyword">instanceof</span> Point) &#123;</div><div class="line">            Point that = (Point) other;</div><div class="line">            result = (<span class="keyword">this</span>.getX() == that.getX() &amp;&amp; <span class="keyword">this</span>.getY() == that.getY()</div><div class="line">                    &amp;&amp; <span class="keyword">this</span>.getClass().equals(that.getClass()));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="number">41</span> * (<span class="number">41</span> + getX()) + getY());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里，Point类的实例只有当和另外一个对象是同样类，并且有同样的坐标时候，他们才被认为是相等的，即意味着 .getClass()返回的是同样的值。这个新定义的等价关系满足了对称性和传递性因为对于比较对象是不同的类时结果总是false。所以着色点(colored point)永远不会等于点(point)。通常这看起来非常合理，但是这里也存在着另外一种争论——这样的比较过于严格了。</p>
+<p>考虑我们如下这种稍微的迂回的方式来定义我们的坐标点(1,2)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Point pAnon = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">1</span>) &#123;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>pAnon 等于 p 吗？答案是假，因为 p 和 pAnon 的 java.lang.Class 对象不同。p 是 Point，而 pAnon 是 Point 的一个匿名派生类。但是，非常清晰的是 pAnon 的确是在坐标1，2上的另外一个点。所以将他们认为是不同的点是没有理由的。</p>
+<h2 id="canEqual-方法"><a href="#canEqual-方法" class="headerlink" title="canEqual 方法"></a><strong>canEqual 方法</strong></h2><p>到此，我们看其来似乎是遇到阻碍了，存在着一种正常的方式不仅可以在不同类继承层次上定义等价性，并且保证其等价的规范性吗？事实上，的确存在这样的一种方法，但是这就要求除了重定义 equals 和 hashCode 外还要另外的定义一个方法。基本思路就是在重载 equals (和 hashCode) 的同时，它应该也要要明确的声明这个类的对象永远不等价于其他的实现了不同等价方法的超类的对象。为了达到这个目标，我们对每一个重载了 equals 的类新增一个方法 canEqual 方法。这个方法的方法签名是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canEqual</span><span class="params">(Object other)</span></span></div></pre></td></tr></table></figure>
+<p>如果 other 对象是 canEquals (重)定义那个类的实例时，那么这个方法应该返回真，否则返回 false。这个方法由 equals 方法调用，并保证了两个对象是可以相互比较的。下面 Point 类的新的也是最终的实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> x;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> y;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Point</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.x = x;</div><div class="line">        <span class="keyword">this</span>.y = y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> x;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (other <span class="keyword">instanceof</span> Point) &#123;</div><div class="line">            Point that = (Point) other;</div><div class="line">            result =(that.canEqual(<span class="keyword">this</span>) &amp;&amp; <span class="keyword">this</span>.getX() == that.getX() &amp;&amp; <span class="keyword">this</span>.getY() == that.getY());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="number">41</span> * (<span class="number">41</span> + getX()) + getY());</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canEqual</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (other <span class="keyword">instanceof</span> Point);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个版本的 Point 类的 equals 方法中包含了一个额外的需求，通过 canEquals 方法来决定另外一个对象是否是是满足可以比较的对象。在 Point 中的 canEqual 宣称了所有的 Point 类实例都能被比较。</p>
+<p>下面是 ColoredPoint 相应的实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ColoredPoint</span> <span class="keyword">extends</span> <span class="title">Point</span> </span>&#123; <span class="comment">// 不再违背对称性</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Color color;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ColoredPoint</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, Color color)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(x, y);</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (other <span class="keyword">instanceof</span> ColoredPoint) &#123;</div><div class="line">            ColoredPoint that = (ColoredPoint) other;</div><div class="line">            result = (that.canEqual(<span class="keyword">this</span>) &amp;&amp; <span class="keyword">this</span>.color.equals(that.color) &amp;&amp; <span class="keyword">super</span>.equals(that));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="number">41</span> * <span class="keyword">super</span>.hashCode() + color.hashCode());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canEqual</span><span class="params">(Object other)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (other <span class="keyword">instanceof</span> ColoredPoint);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在上显示的新版本的 Point 类和 ColoredPoint 类定义保证了等价的规范。等价是对称和可传递的。比较一个 Point 和 ColoredPoint 类总是返回 false。因为点 p 和着色点 cp，“p.equals(cp) 返回的是假。并且，因为 cp.canEqual(p) 总返回 false。相反的比较，cp.equals(p) 同样也返回 false，由于 p 不是一个 ColoredPoint，所以在 ColoredPoint 的 equals 方法体内的第一个 instanceof 检查就失败了。</p>
+<p>另外一个方面，不同的 Point 子类的实例却是可以比较的，同样没有重定义等价性方法的类也是可以比较的。对于这个新类的定义，p 和 pAnon 的比较将总返回 true。下面是一些例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Point p = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">2</span>);</div><div class="line"></div><div class="line">ColoredPoint cp = <span class="keyword">new</span> ColoredPoint(<span class="number">1</span>, <span class="number">2</span>, Color.INDIGO);</div><div class="line"></div><div class="line">Point pAnon = <span class="keyword">new</span> Point(<span class="number">1</span>, <span class="number">1</span>) &#123;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">Set&lt;Point&gt; coll = <span class="keyword">new</span> java.util.HashSet&lt;Point&gt;();</div><div class="line">coll.add(p);</div><div class="line"></div><div class="line">System.out.println(coll.contains(p)); <span class="comment">// 打印 true</span></div><div class="line"></div><div class="line">System.out.println(coll.contains(cp)); <span class="comment">// 打印 false</span></div><div class="line"></div><div class="line">System.out.println(coll.contains(pAnon)); <span class="comment">// 打印 true</span></div></pre></td></tr></table></figure>
+<p>这些例子显示了如果父类在 equals 的实现定义并调用了 canEquals，那么开发人员实现的子类就能决定这个子类是否可以和它父类的实例进行比较。例如 ColoredPoint，因为它以 “一个着色点永远不可以等于普通不带颜色的点重载了” canEqual，所以他们就不能比较。但是因为 pAnon 引用的匿名子类没有重载 canEqual，因此它的实例就可以和 Point 的实例进行对比。</p>
+<p>canEqual 方法的一个潜在的争论是它是否违背了 Liskov 替换准则(LSP)。例如，通过比较运行态的类来实现的比较技术(译者注： canEqual的前一版本，使用.getClass()的那个版本)，将导致不能定义出一个子类，这个子类的实例可以和其父类进行比较，因此就违背了LSP。这是因为，LSP 原则是这样的，在任何你能使用父类的地方你都可以使用子类去替换它。在之前例子中，虽然 cp 的 x，y 坐标匹配那些在集合中的点，然而 “coll.contains(cp)” 仍然返回 false，这看起来似乎违背得了 LSP 准则，因为你不能这里能使用 Point 的地方使用一个 ColoredPointed。但是我们认为这种解释是错误的，因为 LSP 原则并没有要求子类和父类的行为一致，而仅要求其行为能一种方式满足父类的规范。</p>
+<p>通过比较运行态的类来编写 equals 方法(译者注：canEqual 的前一版本，使用 .getClass() 的那个版本)的问题并不是违背 LSP 准则的问题，但是它也没有为你指明一种创建派生类的实例能和父类实例进行对比的的方法。例如，我们使用这种运行态比较的技术在之前的 “coll.contains(pAnon)” 将会返回 false，并且这并不是我们希望的。相反我们希望 “coll.contains(cp)” 返回 false，因为通过在 ColoredPoint 中重载的 equals，我基本上可以说，一个在坐标 1，2 上着色点和一个坐标 1，2 上的普通点并不是一回事。然而，在最后的例子中，我们能传递 Point 两种不同的子类实例到集合中 contains 方法，并且我们能得到两个不同的答案，并且这两个答案都正确。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+<script src="../../../../js/vdonate.js"></script>
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: 'Donate', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: '/gallery/WeChatQR.jpg',
+  alipayImage: '/gallery/AliPayQR.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>Post author:  </strong>kevinyangI</a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>Post link:  </strong>
+          <a href="/kevinyangI.github.io/2018/08/16/如何在 Java 中避免 equals 方法的隐藏陷阱/" target="_blank" title="如何在Java中避免equals方法的隐藏陷阱">https://kevinyangI.github.io/2018/08/16/如何在 Java 中避免 equals 方法的隐藏陷阱/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>Copyright Notice:   </strong>
+            All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            unless stating additionally.
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="../理解==、equals 和 hashcode 的区别/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">理解 ==、equals 和 hashcode 的区别</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的等价方法陷阱"><span class="nav-number">2.</span> <span class="nav-text">常见的等价方法陷阱</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#陷阱1：定义错误-equals-方法签名-signature"><span class="nav-number">2.1.</span> <span class="nav-text">陷阱1：定义错误 equals 方法签名(signature)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#陷阱2：重载了-equals-的但没有同时重载-hashCode-的方法"><span class="nav-number">2.2.</span> <span class="nav-text">陷阱2：重载了 equals 的但没有同时重载 hashCode 的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#陷阱3：建立在会变化字段上的equals定义"><span class="nav-number">2.3.</span> <span class="nav-text">陷阱3：建立在会变化字段上的equals定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#陷阱4：不满足等价关系的equals错误定义"><span class="nav-number">2.4.</span> <span class="nav-text">陷阱4：不满足等价关系的equals错误定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#canEqual-方法"><span class="nav-number">3.</span> <span class="nav-text">canEqual 方法</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2018 kevinyangI All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				UV : <span id="busuanzi_value_site_uv"></span> |  
+				PV : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="../../../../index.html" class="mobile-nav-link">Home</a>
+  
+    <a href="../../../../archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="../../../../categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="../../../../tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="../../../../about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css">
+  <script src="../../../../fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="../../../../js/scripts.js"></script>
+
+
+
+
+  <script src="../../../../js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            kevinyangI
+          </div>
+          <div class="panel-body">
+            Copyright © 2018 kevinyangI All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
