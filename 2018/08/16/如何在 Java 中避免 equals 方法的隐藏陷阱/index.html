@@ -14,7 +14,7 @@
   <meta name="description" content="译文原文： 如何在 Java 中避免 equals 方法的隐藏陷阱英文原文： How to Write an Equality Method in Java
 
 摘要本文描述重载 equals 方法的技术，这种技术即使是具现类的子类增加了字段也能保证 equal 语义的正确性。
-在《Effective Java》的第8项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题">
+在《Effective Java》的第 8 项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何在 Java 中避免 equals 方法的隐藏陷阱">
 <meta property="og:url" content="https://kevinyangI.github.io/2018/08/16/如何在 Java 中避免 equals 方法的隐藏陷阱/index.html">
@@ -22,14 +22,14 @@
 <meta property="og:description" content="译文原文： 如何在 Java 中避免 equals 方法的隐藏陷阱英文原文： How to Write an Equality Method in Java
 
 摘要本文描述重载 equals 方法的技术，这种技术即使是具现类的子类增加了字段也能保证 equal 语义的正确性。
-在《Effective Java》的第8项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题">
-<meta property="og:updated_time" content="2018-09-02T12:13:04.720Z">
+在《Effective Java》的第 8 项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础">
+<meta property="og:updated_time" content="2018-09-02T12:14:42.523Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何在 Java 中避免 equals 方法的隐藏陷阱">
 <meta name="twitter:description" content="译文原文： 如何在 Java 中避免 equals 方法的隐藏陷阱英文原文： How to Write an Equality Method in Java
 
 摘要本文描述重载 equals 方法的技术，这种技术即使是具现类的子类增加了字段也能保证 equal 语义的正确性。
-在《Effective Java》的第8项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题">
+在《Effective Java》的第 8 项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础">
   
     <link rel="alternate" href="/atom.xml" title="kevinyangI" type="application/atom+xml">
   
@@ -206,7 +206,7 @@
 <p><strong>译文原文</strong>： <a href="https://coolshell.cn/articles/1051.html" target="_blank" rel="external"><strong>如何在 Java 中避免 equals 方法的隐藏陷阱</strong></a><br><strong>英文原文</strong>： <a href="https://www.artima.com/lejava/articles/equality.html" target="_blank" rel="external"><strong>How to Write an Equality Method in Java</strong></a></p>
 </blockquote>
 <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a><strong>摘要</strong></h2><p>本文描述重载 equals 方法的技术，这种技术即使是具现类的子类增加了字段也能保证 equal 语义的正确性。</p>
-<p>在《Effective Java》的第8项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题，要保证派生类的 equal 正确性语义所会面对的困难。Bloch 这样写到：</p>
+<p>在《Effective Java》的第 8 项中，Josh Bloch 描述了当继承类作为面向对象语言中的等价关系的基础问题，要保证派生类的 equal 正确性语义所会面对的困难。Bloch 这样写到：</p>
 <blockquote>
 <p><strong>除非你忘记了面向对象抽象的好处，否则在当你继承一个新类或在类中增加了一个值组件时你无法同时保证 equal 的语义依然正确。</strong></p>
 </blockquote>
